@@ -1,8 +1,6 @@
 package tech.kotlinlang.graphs.barGraph
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -12,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.tooling.preview.Preview
 import kotlin.math.abs
 
 @Composable
@@ -196,53 +193,4 @@ fun BarGraph(
             )
         }
     }
-}
-
-@Composable
-@Preview
-private fun Demo() {
-    val malesBarType = object : BarType {
-        override val color: Color
-            get() = Color.Green
-    }
-    val femalesBarType = object : BarType {
-        override val color: Color
-            get() = Color.Blue
-    }
-    BarGraph(
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(2F),
-        barGroupDataList = listOf(
-            BarGroupData(
-                barDataList = listOf(
-                    BarData(
-                        value = -100F,
-                        type = malesBarType
-                    ),
-                    BarData(
-                        value = 50F,
-                        type = femalesBarType,
-                    )
-                ),
-                xValue = "2019",
-            ),
-            BarGroupData(
-                barDataList = listOf(
-                    BarData(
-                        value = -120F,
-                        type = malesBarType
-                    ),
-                    BarData(
-                        value = -10F,
-                        type = femalesBarType,
-                    )
-                ),
-                xValue = "2020",
-            )
-        ),
-        graphSettings = GraphSettings(
-
-        ),
-    )
 }

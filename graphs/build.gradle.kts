@@ -1,7 +1,9 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.compose.compiler)
+    id("com.vanniktech.maven.publish") version "0.28.0"
 }
 
 android {
@@ -28,30 +30,61 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
     buildFeatures {
         compose = true
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
 }
 
-composeCompiler {
-    enableStrongSkippingMode = true
+mavenPublishing {
+    coordinates(
+        "tech.kotlinlang",
+        "graphs",
+        "1.0.0"
+    )
 
-    reportsDestination = layout.buildDirectory.dir("compose_compiler")
-//    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
+    pom {
+        name.set("Compose Graphs")
+        description.set("Library for graphs in Compose")
+        inceptionYear.set("2024")
+        url.set("https://kotlinlang.tech")
+
+        licenses {
+            license {
+                name.set("MIT")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("reyazoct")
+                name.set("Reyaz Ahmad")
+                email.set("reyazoct@gmail.com")
+                url.set("https://reyaz.live")
+            }
+        }
+
+        scm {
+            url.set("https://github.com/reyazoct/Graphs")
+        }
+    }
+
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
 }
 
 dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.activity.compose)
-
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 }

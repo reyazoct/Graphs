@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -37,6 +36,9 @@ android {
     buildFeatures {
         compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -44,23 +46,13 @@ android {
     }
 }
 
-composeCompiler {
-    enableStrongSkippingMode = true
-
-    reportsDestination = layout.buildDirectory.dir("compose_compiler")
-//    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
-}
-
 dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
     implementation(project(":graphs"))
 
     debugImplementation(libs.androidx.ui.tooling)
