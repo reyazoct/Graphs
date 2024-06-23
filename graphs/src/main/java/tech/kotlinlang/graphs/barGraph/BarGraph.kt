@@ -3,14 +3,21 @@ package tech.kotlinlang.graphs.barGraph
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 
@@ -20,6 +27,7 @@ fun BarGraph(
     barGroupDataList: List<BarGroupData>,
     graphSettings: GraphSettings = GraphSettings(),
     transformValue: (Float) -> String = { it.toString() },
+    yLabel: String? = null,
 ) {
     val maximumValue = if (barGroupDataList.isEmpty()) 0F
     else barGroupDataList.maxOf { barGroupData ->
@@ -83,6 +91,33 @@ fun BarGraph(
             (totalYAxisValueHeight - (yAxisValueMeasure.size.height * graphSettings.yAxisValueCount)) / (graphSettings.yAxisValueCount - 1)
 
         var maxYAxisValueTextWidthResult = 0F
+        val yAxisLabelOffset = if (yLabel != null) {
+            val yLabelMeasuredText = textMeasurer.measure(
+                text = AnnotatedString(yLabel),
+                maxLines = 1,
+                style = graphSettings.yLabelStyle.copy(
+                    textAlign = TextAlign.Center
+                ),
+                constraints = Constraints.fixedWidth(totalYAxisValueHeight.toInt())
+            )
+            rotate(
+                degrees = 270F,
+                pivot = Offset(
+                    0F,
+                    totalYAxisValueHeight,
+                )
+            ) {
+                drawText(
+                    textLayoutResult = yLabelMeasuredText,
+                    topLeft = Offset(
+                        0F,
+                        totalYAxisValueHeight,
+                    ),
+                )
+            }
+            yLabelMeasuredText.size.height.toFloat()
+        } else 0F
+
         repeat(graphSettings.yAxisValueCount) { index ->
             val yAxisValueTextResult = textMeasurer.measure(
                 text = AnnotatedString(transformValue(maxHeight - (eachHeightGap * index))),
@@ -97,11 +132,12 @@ fun BarGraph(
             drawText(
                 textLayoutResult = yAxisValueTextResult,
                 topLeft = Offset(
-                    x = 0F,
+                    x = yAxisLabelOffset + graphSettings.yLabelGapEnd.toPx(),
                     y = yOffset,
                 ),
             )
         }
+        maxYAxisValueTextWidthResult += yAxisLabelOffset
 
         val xAxisValueTextOffset = maxYAxisValueTextWidthResult + graphSettings.yAxisValueGraphGap.toPx()
         val totalXOffsetBeforeGraph = xAxisValueTextOffset + 0F
@@ -157,6 +193,7 @@ fun BarGraph(
 
             }
         }
+
         drawLine(
             strokeWidth = 2.dp.toPx(),
             cap = StrokeCap.Round,
@@ -196,33 +233,33 @@ fun BarGraph(
                     }
                 }
 
+                val cornerRadius = CornerRadius(graphSettings.cornerRoundness.toPx())
+                val path = Path().apply {
+                    addRoundRect(
+                        RoundRect(
+                            rect = Rect(
+                                offset = Offset(
+                                    x = barDataOffset,
+                                    y = barYOffset,
+                                ),
+                                size = Size(
+                                    width = eachBarWidth,
+                                    height = barHeight,
+                                ),
+                            ),
+                            topLeft = if (barData.value >= 0F) cornerRadius else CornerRadius.Zero,
+                            topRight = if (barData.value >= 0F) cornerRadius else CornerRadius.Zero,
+                            bottomLeft = if (barData.value >= 0F) CornerRadius.Zero else cornerRadius,
+                            bottomRight = if (barData.value >= 0F) CornerRadius.Zero else cornerRadius,
+                        )
+                    )
+                }
                 if (graphSettings.gradientToZero) {
                     val colors = if (barData.value >= 0F) listOf(barData.type.color, Color.Transparent)
                     else listOf(Color.Transparent, barData.type.color)
-
-                    drawRect(
-                        brush = Brush.verticalGradient(colors),
-                        topLeft = Offset(
-                            x = barDataOffset,
-                            y = barYOffset,
-                        ),
-                        size = Size(
-                            width = eachBarWidth,
-                            height = barHeight,
-                        )
-                    )
+                    drawPath(path, Brush.verticalGradient(colors))
                 } else {
-                    drawRect(
-                        color = barData.type.color,
-                        topLeft = Offset(
-                            x = barDataOffset,
-                            y = barYOffset,
-                        ),
-                        size = Size(
-                            width = eachBarWidth,
-                            height = barHeight,
-                        )
-                    )
+                    drawPath(path, barData.type.color)
                 }
             }
             val xValueTextResult = textMeasurer.measure(

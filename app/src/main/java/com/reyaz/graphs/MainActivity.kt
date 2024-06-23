@@ -17,6 +17,7 @@ import tech.kotlinlang.graphs.barGraph.BarGraph
 import tech.kotlinlang.graphs.barGraph.BarGroupData
 import tech.kotlinlang.graphs.barGraph.BarType
 import tech.kotlinlang.graphs.barGraph.GraphSettings
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +87,10 @@ class MainActivity : ComponentActivity() {
                             gradientToZero = true,
                             zeroLineColor = Color.Black,
                         ),
+                        transformValue = {
+                            it.roundToInt().toString()
+                        },
+                        yLabel = "WR Score"
                     )
                 }
             }

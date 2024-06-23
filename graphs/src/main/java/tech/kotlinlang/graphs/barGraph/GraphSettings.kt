@@ -23,4 +23,10 @@ class GraphSettings(
     val xAxisValueGraphGap: Dp = 4.dp,
 
     val zeroLineColor: Color = Color(0x33F2F2F2),
+
+    val yLabelStyle: TextStyle = TextStyle.Default,
+
+    val yLabelGapEnd: Dp = 4.dp,
+
+    val cornerRoundness: Dp = 8.dp,
 )
