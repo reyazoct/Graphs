@@ -7,9 +7,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 
 @Composable
@@ -17,6 +19,7 @@ fun BarGraph(
     modifier: Modifier = Modifier,
     barGroupDataList: List<BarGroupData>,
     graphSettings: GraphSettings = GraphSettings(),
+    transformValue: (Float) -> String = { it.toString() },
 ) {
     val maximumValue = if (barGroupDataList.isEmpty()) 0F
     else barGroupDataList.maxOf { barGroupData ->
@@ -82,7 +85,7 @@ fun BarGraph(
         var maxYAxisValueTextWidthResult = 0F
         repeat(graphSettings.yAxisValueCount) { index ->
             val yAxisValueTextResult = textMeasurer.measure(
-                text = AnnotatedString((maxHeight - (eachHeightGap * index)).toString()),
+                text = AnnotatedString(transformValue(maxHeight - (eachHeightGap * index))),
                 maxLines = 1,
                 style = graphSettings.yAxisValueStyle,
                 softWrap = false,
@@ -113,13 +116,58 @@ fun BarGraph(
         val graphSize = Size(totalGraphWidth, totalGraphHeight)
         val heightRatio = graphSize.height / (maxHeight - minHeight)
         val totalBarGap = (graphSize.width * graphSettings.barGapRatio)
-        val eachBarGap = totalBarGap / (barGroupDataList.size - 1)
+        val eachBarGap = totalBarGap / barGroupDataList.size
 
         val barGroupWidth = (graphSize.width - totalBarGap) / barGroupDataList.size
 
+        val startOffsetForLine: Offset
+        val endOffsetForLine: Offset
+        when (type) {
+            true -> {
+                startOffsetForLine = Offset(
+                    x = totalXOffsetBeforeGraph,
+                    y = totalYOffsetBeforeGraph + totalGraphHeight,
+                )
+                endOffsetForLine = Offset(
+                    x = totalXOffsetBeforeGraph + graphSize.width,
+                    y = totalYOffsetBeforeGraph + totalGraphHeight
+                )
+            }
+
+            false -> {
+                startOffsetForLine = Offset(
+                    x = totalXOffsetBeforeGraph,
+                    y = totalYOffsetBeforeGraph,
+                )
+                endOffsetForLine = Offset(
+                    x = totalXOffsetBeforeGraph + graphSize.width,
+                    y = totalYOffsetBeforeGraph,
+                )
+            }
+
+            null -> {
+                startOffsetForLine = Offset(
+                    x = totalXOffsetBeforeGraph,
+                    y = totalYOffsetBeforeGraph + (totalGraphHeight / 2),
+                )
+                endOffsetForLine = Offset(
+                    x = totalXOffsetBeforeGraph + graphSize.width,
+                    y = totalYOffsetBeforeGraph + (totalGraphHeight / 2),
+                )
+
+            }
+        }
+        drawLine(
+            strokeWidth = 2.dp.toPx(),
+            cap = StrokeCap.Round,
+            color = graphSettings.zeroLineColor,
+            start = startOffsetForLine,
+            end = endOffsetForLine,
+        )
+
         barGroupDataList.forEachIndexed { barGroupIndex, barGroupData ->
             val eachBarWidth = (barGroupWidth) / barGroupData.barDataList.size
-            val barGroupOffset = totalXOffsetBeforeGraph + (barGroupWidth + eachBarGap) * barGroupIndex
+            val barGroupOffset = totalXOffsetBeforeGraph + barGroupWidth * barGroupIndex + eachBarGap * (barGroupIndex + 0.5F)
 
             barGroupData.barDataList.forEachIndexed { barDataIndex, barData ->
                 val barDataOffset = barGroupOffset + eachBarWidth * barDataIndex
@@ -149,14 +197,11 @@ fun BarGraph(
                 }
 
                 if (graphSettings.gradientToZero) {
-                    val brush = Brush.verticalGradient(
-                        listOf(
-                            barData.type.color,
-                            Color.Transparent,
-                        )
-                    )
+                    val colors = if (barData.value >= 0F) listOf(barData.type.color, Color.Transparent)
+                    else listOf(Color.Transparent, barData.type.color)
+
                     drawRect(
-                        brush = brush,
+                        brush = Brush.verticalGradient(colors),
                         topLeft = Offset(
                             x = barDataOffset,
                             y = barYOffset,

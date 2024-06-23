@@ -1,6 +1,7 @@
 package tech.kotlinlang.graphs.barGraph
 
 import androidx.annotation.FloatRange
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -20,4 +21,6 @@ class GraphSettings(
     val xAxisValueStyle: TextStyle = TextStyle.Default,
 
     val xAxisValueGraphGap: Dp = 4.dp,
+
+    val zeroLineColor: Color = Color(0x33F2F2F2),
 )
