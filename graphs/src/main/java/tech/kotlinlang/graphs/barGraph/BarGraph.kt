@@ -18,13 +18,15 @@ fun BarGraph(
     barGroupDataList: List<BarGroupData>,
     graphSettings: GraphSettings = GraphSettings(),
 ) {
-    val maximumValue = barGroupDataList.maxOf { barGroupData ->
+    val maximumValue = if (barGroupDataList.isEmpty()) 0F
+    else barGroupDataList.maxOf { barGroupData ->
         barGroupData.barDataList.maxOf {
             it.value
         }
     }
 
-    val minimumValue = barGroupDataList.minOf { barGroupData ->
+    val minimumValue = if (barGroupDataList.isEmpty()) 0F
+    else barGroupDataList.minOf { barGroupData ->
         barGroupData.barDataList.minOf {
             it.value
         }

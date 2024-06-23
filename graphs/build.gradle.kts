@@ -11,7 +11,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 23
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -47,7 +47,7 @@ mavenPublishing {
     coordinates(
         "tech.kotlinlang",
         "graphs",
-        "1.0.0"
+        "1.0.2"
     )
 
     pom {
