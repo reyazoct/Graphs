@@ -29,13 +29,19 @@ class MainActivity : ComponentActivity() {
                     override val color: Color
                         get() = Color.Green
                     override val label: String
-                        get() = "Male"
+                        get() = "111111111"
                 }
                 val femalesBarType = object : BarType {
                     override val color: Color
                         get() = Color.Blue
                     override val label: String
-                        get() = "Female"
+                        get() = "222222222222222222222222222222"
+                }
+                val transBarType = object : BarType {
+                    override val color: Color
+                        get() = Color.Yellow
+                    override val label: String
+                        get() = "3333333333333"
                 }
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -55,7 +61,11 @@ class MainActivity : ComponentActivity() {
                                     BarData(
                                         value = -50F,
                                         type = femalesBarType,
-                                    )
+                                    ),
+                                    BarData(
+                                        value = 50F,
+                                        type = transBarType,
+                                    ),
                                 ),
                                 xValue = "2019",
                             ),
@@ -68,7 +78,11 @@ class MainActivity : ComponentActivity() {
                                     BarData(
                                         value = -50F,
                                         type = femalesBarType,
-                                    )
+                                    ),
+                                    BarData(
+                                        value = 50F,
+                                        type = transBarType,
+                                    ),
                                 ),
                                 xValue = "2020",
                             ),
@@ -81,7 +95,11 @@ class MainActivity : ComponentActivity() {
                                     BarData(
                                         value = -80F,
                                         type = femalesBarType,
-                                    )
+                                    ),
+                                    BarData(
+                                        value = 50F,
+                                        type = transBarType,
+                                    ),
                                 ),
                                 xValue = "2020",
                             )

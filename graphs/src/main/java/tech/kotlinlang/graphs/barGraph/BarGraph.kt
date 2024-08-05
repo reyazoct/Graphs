@@ -88,7 +88,7 @@ fun BarGraph(
         var totalBarTypeLabelHeight = 0F
         var totalXLabelTaken = 0F
         val barTypeList = barGroupDataList.flatMap { it.barDataList }.map { it.type }.distinct().reversed()
-        barTypeList.forEach { barType ->
+        barTypeList.forEachIndexed { index, barType ->
             val barTypeMeasure = textMeasurer.measure(
                 text = barType.label,
                 maxLines = 1,
@@ -99,10 +99,10 @@ fun BarGraph(
             val radius = barTypeMeasure.size.height / 3F
             val totalBarTypeLabelWidthToBeTaken = radius + barTypeMeasure.size.height + barTypeMeasure.size.width
 
-            var xLabelOffset = size.width - if (totalXLabelTaken > totalBarTypeLabelWidthToBeTaken) {
-                totalXLabelTaken + totalBarTypeLabelWidthToBeTaken + graphSettings.barLabelGap.toPx()
+            var xLabelOffset = size.width - if (size.width - totalXLabelTaken > totalBarTypeLabelWidthToBeTaken) {
+                totalXLabelTaken + totalBarTypeLabelWidthToBeTaken + if (totalXLabelTaken == 0F) 0F else graphSettings.barLabelGap.toPx()
             } else {
-                totalBarTypeLabelHeight += barTypeMeasure.size.height.toFloat() + graphSettings.barLabelGap.toPx()
+                totalBarTypeLabelHeight += barTypeMeasure.size.height.toFloat() + 4.dp.toPx()
                 totalBarTypeLabelWidthToBeTaken
             }
 
@@ -111,7 +111,7 @@ fun BarGraph(
                 radius = radius,
                 center = Offset(
                     x = xLabelOffset + radius,
-                    y = size.height - barTypeMeasure.size.height / 2,
+                    y = size.height - totalBarTypeLabelHeight - barTypeMeasure.size.height / 2,
                 ),
             )
             xLabelOffset += barTypeMeasure.size.height
@@ -119,10 +119,11 @@ fun BarGraph(
                 textLayoutResult = barTypeMeasure,
                 topLeft = Offset(
                     x = xLabelOffset,
-                    y = size.height - barTypeMeasure.size.height,
+                    y = size.height - totalBarTypeLabelHeight - barTypeMeasure.size.height,
                 ),
             )
             totalXLabelTaken += totalBarTypeLabelWidthToBeTaken
+            if (index == barTypeList.lastIndex) totalBarTypeLabelHeight += barTypeMeasure.size.height.toFloat() + 4.dp.toPx()
         }
         // bar Label End
 
