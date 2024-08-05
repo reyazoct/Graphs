@@ -26,7 +26,11 @@ class GraphSettings(
 
     val yLabelStyle: TextStyle = TextStyle.Default,
 
+    val barLabelStyle: TextStyle = TextStyle.Default,
+
     val yLabelGapEnd: Dp = 4.dp,
 
     val cornerRoundness: Dp = 8.dp,
+
+    val barLabelGap: Dp = 12.dp,
 )

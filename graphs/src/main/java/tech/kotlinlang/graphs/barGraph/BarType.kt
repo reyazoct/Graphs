@@ -4,4 +4,5 @@ import androidx.compose.ui.graphics.Color
 
 interface BarType {
     val color: Color
+    val label: String
 }

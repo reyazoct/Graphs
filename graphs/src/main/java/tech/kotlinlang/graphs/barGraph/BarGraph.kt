@@ -84,8 +84,50 @@ fun BarGraph(
             softWrap = false,
         )
 
+        // bar Label Start
+        var totalBarTypeLabelHeight = 0F
+        var totalXLabelTaken = 0F
+        val barTypeList = barGroupDataList.flatMap { it.barDataList }.map { it.type }.distinct().reversed()
+        barTypeList.forEach { barType ->
+            val barTypeMeasure = textMeasurer.measure(
+                text = barType.label,
+                maxLines = 1,
+                style = graphSettings.barLabelStyle,
+                softWrap = false,
+            )
+
+            val radius = barTypeMeasure.size.height / 3F
+            val totalBarTypeLabelWidthToBeTaken = radius + barTypeMeasure.size.height + barTypeMeasure.size.width
+
+            var xLabelOffset = size.width - if (totalXLabelTaken > totalBarTypeLabelWidthToBeTaken) {
+                totalXLabelTaken + totalBarTypeLabelWidthToBeTaken + graphSettings.barLabelGap.toPx()
+            } else {
+                totalBarTypeLabelHeight += barTypeMeasure.size.height.toFloat() + graphSettings.barLabelGap.toPx()
+                totalBarTypeLabelWidthToBeTaken
+            }
+
+            drawCircle(
+                color = barType.color,
+                radius = radius,
+                center = Offset(
+                    x = xLabelOffset + radius,
+                    y = size.height - barTypeMeasure.size.height / 2,
+                ),
+            )
+            xLabelOffset += barTypeMeasure.size.height
+            drawText(
+                textLayoutResult = barTypeMeasure,
+                topLeft = Offset(
+                    x = xLabelOffset,
+                    y = size.height - barTypeMeasure.size.height,
+                ),
+            )
+            totalXLabelTaken += totalBarTypeLabelWidthToBeTaken
+        }
+        // bar Label End
+
         val totalYAxisValueHeight =
-            size.height - xAxisValueMeasure.size.height - graphSettings.xAxisValueGraphGap.toPx() + (yAxisValueMeasure.size.height / 2)
+            size.height - xAxisValueMeasure.size.height - graphSettings.xAxisValueGraphGap.toPx() - totalBarTypeLabelHeight + (yAxisValueMeasure.size.height / 2)
 
         val eachYAxisValueGap =
             (totalYAxisValueHeight - (yAxisValueMeasure.size.height * graphSettings.yAxisValueCount)) / (graphSettings.yAxisValueCount - 1)
@@ -147,7 +189,7 @@ fun BarGraph(
 
         val totalGraphWidth = size.width - totalXOffsetBeforeGraph
         val totalGraphHeight =
-            size.height - xAxisValueMeasure.size.height - graphSettings.xAxisValueGraphGap.toPx() - (yAxisValueMeasure.size.height / 2)
+            size.height - xAxisValueMeasure.size.height - graphSettings.xAxisValueGraphGap.toPx() - totalBarTypeLabelHeight - (yAxisValueMeasure.size.height / 2)
 
         val graphSize = Size(totalGraphWidth, totalGraphHeight)
         val heightRatio = graphSize.height / (maxHeight - minHeight)

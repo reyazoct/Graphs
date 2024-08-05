@@ -28,10 +28,14 @@ class MainActivity : ComponentActivity() {
                 val malesBarType = object : BarType {
                     override val color: Color
                         get() = Color.Green
+                    override val label: String
+                        get() = "Male"
                 }
                 val femalesBarType = object : BarType {
                     override val color: Color
                         get() = Color.Blue
+                    override val label: String
+                        get() = "Female"
                 }
                 Box(
                     modifier = Modifier.fillMaxSize(),
