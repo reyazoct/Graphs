@@ -47,7 +47,7 @@ mavenPublishing {
     coordinates(
         "tech.kotlinlang",
         "graphs",
-        "1.0.9"
+        "1.0.10"
     )
 
     pom {
