@@ -37,12 +37,6 @@ class MainActivity : ComponentActivity() {
                     override val label: String
                         get() = "222222222222222222222222222222"
                 }
-                val transBarType = object : BarType {
-                    override val color: Color
-                        get() = Color.Yellow
-                    override val label: String
-                        get() = "3333333333333"
-                }
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
@@ -50,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     BarGraph(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(2F),
+                            .aspectRatio(1.5F),
                         barGroupDataList = listOf(
                             BarGroupData(
                                 barDataList = listOf(
@@ -62,26 +56,18 @@ class MainActivity : ComponentActivity() {
                                         value = -50F,
                                         type = femalesBarType,
                                     ),
-                                    BarData(
-                                        value = 50F,
-                                        type = transBarType,
-                                    ),
                                 ),
                                 xValue = "2019",
                             ),
                             BarGroupData(
                                 barDataList = listOf(
                                     BarData(
-                                        value = -60F,
+                                        value = 10F,
                                         type = malesBarType
                                     ),
                                     BarData(
-                                        value = -50F,
+                                        value = -10F,
                                         type = femalesBarType,
-                                    ),
-                                    BarData(
-                                        value = 50F,
-                                        type = transBarType,
                                     ),
                                 ),
                                 xValue = "2020",
@@ -95,10 +81,6 @@ class MainActivity : ComponentActivity() {
                                     BarData(
                                         value = -80F,
                                         type = femalesBarType,
-                                    ),
-                                    BarData(
-                                        value = 50F,
-                                        type = transBarType,
                                     ),
                                 ),
                                 xValue = "2020",

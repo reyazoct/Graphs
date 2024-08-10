@@ -19,7 +19,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -47,7 +47,7 @@ mavenPublishing {
     coordinates(
         "tech.kotlinlang",
         "graphs",
-        "1.0.6"
+        "1.0.8"
     )
 
     pom {

@@ -306,6 +306,42 @@ internal fun BarGraphImpl(
                 } else {
                     drawPath(path, barData.type.color)
                 }
+                val valueTextResult = textMeasurer.measure(
+                    text = barData.value.toString(),
+                    maxLines = 1,
+                    constraints = Constraints.fixedWidth(eachBarWidth.toInt()),
+                    style = graphSettings
+                        .yLabelStyle
+                        .copy(textAlign = TextAlign.Center),
+                    softWrap = false,
+                )
+                if (barHeight < valueTextResult.size.height) {
+                    if (barData.value < 0F) {
+                        drawText(
+                            textLayoutResult = valueTextResult,
+                            topLeft = Offset(
+                                x = barDataOffset,
+                                y = barYOffset + barHeight,
+                            )
+                        )
+                    } else {
+                        drawText(
+                            textLayoutResult = valueTextResult,
+                            topLeft = Offset(
+                                x = barDataOffset,
+                                y = barYOffset - valueTextResult.size.height,
+                            )
+                        )
+                    }
+                } else {
+                    drawText(
+                        textLayoutResult = valueTextResult,
+                        topLeft = Offset(
+                            x = barDataOffset,
+                            y = barYOffset + barHeight / 2 - valueTextResult.size.height / 2,
+                        )
+                    )
+                }
             }
             val xValueTextResult = textMeasurer.measure(
                 text = AnnotatedString(barGroupData.xValue),
