@@ -28,9 +28,13 @@ class GraphSettings(
 
     val barLabelStyle: TextStyle = TextStyle.Default,
 
+    val valueOnBarStyle: TextStyle = TextStyle.Default,
+
     val yLabelGapEnd: Dp = 4.dp,
 
     val cornerRoundness: Dp = 8.dp,
 
     val barLabelGap: Dp = 12.dp,
+
+    val transformValue: (Float) -> String = { it.toString() }
 )

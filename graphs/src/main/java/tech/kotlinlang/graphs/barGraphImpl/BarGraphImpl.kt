@@ -307,11 +307,11 @@ internal fun BarGraphImpl(
                     drawPath(path, barData.type.color)
                 }
                 val valueTextResult = textMeasurer.measure(
-                    text = barData.value.toString(),
+                    text = graphSettings.transformValue(barData.value),
                     maxLines = 1,
                     constraints = Constraints.fixedWidth(eachBarWidth.toInt()),
                     style = graphSettings
-                        .yLabelStyle
+                        .valueOnBarStyle
                         .copy(textAlign = TextAlign.Center),
                     softWrap = false,
                 )
